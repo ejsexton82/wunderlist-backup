@@ -63,7 +63,7 @@ class WunderHTTP
     define_method(name.to_sym) { get(name) }
   end
 
-  %w(tasks reminders subtasks notes task_positions
+  %w(tasks files reminders subtasks notes task_positions
      subtask_positions task_comments webhooks).each do |name|
     define_method(name.to_sym) {|id| get("#{name}?list_id=#{id}") }
   end
@@ -104,7 +104,7 @@ class WunderBackup
     @data = {}
   end
 
-  %w(lists tasks reminders subtasks notes task_positions subtask_positions
+  %w(lists files tasks reminders subtasks notes task_positions subtask_positions
      folders memberships task_comments webhooks).each do |name|
     define_method(name.to_sym) do
       @data.fetch(name.to_sym, [])
@@ -122,6 +122,7 @@ class WunderBackup
       exported: @time.iso8601,
       data: {
         lists: lists,
+	files: files,
         tasks: tasks,
         reminders: reminders,
         subtasks: subtasks,
@@ -154,6 +155,8 @@ wunder.lists.each_with_index do |list, index|
   backup.add_tasks(wunder.tasks(list[:id]))
   STDERR.puts "      ... completed tasks"
   backup.add_tasks(wunder.completed_tasks(list[:id]))
+  STDERR.puts "      ... files"
+  backup.add_files(wunder.files(list[:id]))
   STDERR.puts "      ... reminders"
   backup.add_reminders(wunder.reminders(list[:id]))
   STDERR.puts "      ... subtasks"
