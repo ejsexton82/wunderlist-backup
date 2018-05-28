@@ -15,6 +15,7 @@
 # under the License.
 
 require 'net/http'
+require 'net/https'
 require 'json'
 require 'time'
 
@@ -49,6 +50,8 @@ class WunderHTTP
     @user = nil
     @http = Net::HTTP.new(@uri.host, @uri.port)
     @http.use_ssl = @uri.scheme == 'https'
+    @http.ssl_version = :TLSv1
+    # @http.ciphers = ['DES-CBC3-SHA']
     @cache = {}
   end
 
