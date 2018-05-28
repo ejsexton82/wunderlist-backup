@@ -64,7 +64,7 @@ class WunderHTTP
   end
 
   %w(tasks files reminders subtasks notes task_positions
-     subtask_positions task_comments webhooks).each do |name|
+     subtask_positions task_comments users webhooks).each do |name|
     define_method(name.to_sym) {|id| get("#{name}?list_id=#{id}") }
   end
 
@@ -105,7 +105,7 @@ class WunderBackup
   end
 
   %w(lists files tasks reminders subtasks notes task_positions subtask_positions
-     folders memberships task_comments webhooks).each do |name|
+     folders memberships task_comments users webhooks).each do |name|
     define_method(name.to_sym) do
       @data.fetch(name.to_sym, [])
     end
@@ -121,18 +121,19 @@ class WunderBackup
       user: @user_id,
       exported: @time.iso8601,
       data: {
-        lists: lists,
-	files: files,
-        tasks: tasks,
-        reminders: reminders,
-        subtasks: subtasks,
-        notes: notes,
-        task_positions: task_positions,
+        lists:             lists,
+	files:             files,
+        tasks:             tasks,
+        reminders:         reminders,
+        subtasks:          subtasks,
+        notes:             notes,
+        task_positions:    task_positions,
         subtask_positions: subtask_positions,
-        folders: folders,
-        memberships: memberships,
-        task_comments: task_comments,
-        webhooks: webhooks
+        folders:           folders,
+        memberships:       memberships,
+        task_comments:     task_comments,
+	users:             users,
+        webhooks:          webhooks
       }
     }
   end
@@ -167,6 +168,8 @@ wunder.lists.each_with_index do |list, index|
   backup.add_task_positions(wunder.task_positions(list[:id]))
   STDERR.puts "      ... subtask_positions"
   backup.add_subtask_positions(wunder.subtask_positions(list[:id]))
+  STDERR.puts "      ... users"
+  backup.add_users(wunder.users(list[:id]))
 end
 
 puts JSON.dump(backup.to_hash)
