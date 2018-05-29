@@ -168,8 +168,8 @@ wunder.lists.each_with_index do |list, index|
   backup.add_task_positions(wunder.task_positions(list[:id]))
   STDERR.puts "      ... subtask_positions"
   backup.add_subtask_positions(wunder.subtask_positions(list[:id]))
-  STDERR.puts "      ... users"
-  backup.add_users(wunder.users(list[:id]))
+  # STDERR.puts "      ... users"
+  # backup.add_users(wunder.users(list[:id]))
 end
 
 puts JSON.dump(backup.to_hash)
